@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+</head>
+<body>
+
+<h2>Your Orders</h2>
+
+<ul>
+    {% for item, flower in orders %}
+        <li>
+            {{ flower.name }} — ${{ flower.price }}
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="/flowers">Flowers</a> |
+<a href="/cart">Cart</a> |
+<a href="/orders">Orders</a>
+<hr>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    font-family: Arial;
+    margin: 40px;
+}
+
+button {
+    padding: 6px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+li {
+    margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<h2>Your Cart</h2>
+
+<ul>
+    {% for item, flower in cart_items %}
+        <li>
+            {{ flower.name }} (x{{ item.quantity }}) — ${{ flower.price }}
+
+            <form action="/remove-from-cart/{{ item.id }}" method="post" style="display:inline;">
+                <button type="submit">Remove</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+
+<h3>Total: ${{ total }}</h3>
+
+<form action="/buy" method="post">
+    <button type="submit">Buy</button>
+</form>
+
+<a href="/flowers">Flowers</a> |
+<a href="/cart">Cart</a> |
+<a href="/orders">Orders</a>
+<hr>
+
+</body>
+</html>
