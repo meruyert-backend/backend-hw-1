@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Tasks</title>
+</head>
+<body>
+    <h1>Tasks</h1>
+
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.title }} - {{ task.status }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
