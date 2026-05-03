@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flowers</title>
+</head>
+<body>
+
+<h2>Flowers</h2>
+
+<ul>
+    {% for flower in flowers %}
+        <li>
+            {{ flower.name }} — ${{ flower.price }}
+
+            <form action="/add-to-cart/{{ flower.id }}" method="post" style="display:inline;">
+                <button type="submit">Add to cart</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="/flowers">Flowers</a> |
+<a href="/cart">Cart</a> |
+<a href="/orders">Orders</a>
+<hr>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<html>
+<body>
+
+<h1>Search cars</h1>
+
+<form method="get" action="/cars/search">
+
+<input type="text" name="car_name" placeholder="Car name">
+
+<button type="submit">Search</button>
+
+</form>
+
+<h2>Cars</h2>
+
+<ul>
+{% for car in cars %}
+<li>{{ car.name }} - {{ car.year }}</li>
+{% endfor %}
+</ul>
+
+<a href="/cars/new">Add new car</a>
+
+</body>
+</html>
