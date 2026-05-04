@@ -32,18 +32,26 @@ def create_communication(
     )
 
     # AI part
-    tasks = extract_tasks(data.text)
+    # AI part
+    try:
+        tasks = extract_tasks(data.text)
+        print("AI TASKS:", tasks)
 
-    for t in tasks:
-        task_repo.create_task(
-            db,
-            title=t.get("title"),
-            deadline=t.get("deadline"),
-            client_id=data.client_id,
-            communication_id=comm.id
-        )
+        if tasks:
+            for t in tasks:
+                task_repo.create_task(
+                    db,
+                    title=t.get("title"),
+                    deadline=t.get("deadline"),
+                    client_id=data.client_id,
+                    communication_id=comm.id
+                )
+
+    except Exception as e:
+        print("AI ERROR:", e)
 
     return comm
+
 
 #GET ALL
 @router.get("/", response_model=list[CommunicationResponse])
@@ -84,6 +92,3 @@ def delete_communication(
     communication_repo.delete_communication(db, comm)
 
     return {"message": "Communication deleted"}
-
-
-#

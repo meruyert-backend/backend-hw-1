@@ -5,3 +5,4 @@ flowers.db
 .DS_Store
 .idea/
 
+.env

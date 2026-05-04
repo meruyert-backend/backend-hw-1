@@ -1,3 +1,4 @@
+from config import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
@@ -5,7 +6,9 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from models.user import User
-from auth import SECRET_KEY, ALGORITHM
+
+from dotenv import load_dotenv
+load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -15,7 +18,13 @@ def get_current_user(
     db: Session = Depends(get_db)
 ):
     try:
+        print("DECODE TOKEN KEY:", SECRET_KEY)
+        print("TOKEN:", token)
+        print("TRYING DECODE...")
+
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print("PAYLOAD:", payload)
+
         email = payload.get("sub")
 
         user = db.query(User).filter(User.email == email).first()

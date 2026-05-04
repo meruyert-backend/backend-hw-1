@@ -1,5 +1,8 @@
 from sqlalchemy.orm import Session
 from models.client import Client
+from models.communication import Communication
+from models.task import Task
+
 
 
 #СОЗДАНИЕ
@@ -44,5 +47,11 @@ def update_client(db: Session, client: Client, name: str, company: str, notes: s
 
 #УДАЛИТЬ
 def delete_client(db: Session, client: Client):
+    # удалить tasks
+    db.query(Task).filter(Task.client_id == client.id).delete()
+
+    # удалить communications
+    db.query(Communication).filter(Communication.client_id == client.id).delete()
+
     db.delete(client)
     db.commit()

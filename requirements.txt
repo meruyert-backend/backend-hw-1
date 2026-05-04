@@ -1,7 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 jinja2
 passlib[bcrypt]
 python-jose
 openai
+python-dotenv
