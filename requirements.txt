@@ -7,3 +7,4 @@ python-jose
 openai
 python-dotenv
 email-validator
+python-multipart
