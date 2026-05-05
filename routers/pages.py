@@ -43,9 +43,9 @@ def tasks_page(
     tasks = task_repo.get_tasks(db, current_user.id)
 
     return templates.TemplateResponse(
-        request=request,
-        name="tasks.html",
-        context={
+        "tasks.html",
+        {
+            "request": request,
             "tasks": tasks
         }
     )
