@@ -25,10 +25,13 @@ def clients_page(
     print("TYPE:", type(clients))
     print("FIRST:", clients[0] if clients else "EMPTY")
 
-    return templates.TemplateResponse("clients.html", {
-        "request": request,
-        "clients": clients
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="clients.html",
+        context={
+            "clients": clients
+        }
+    )
 
 
 @router.get("/tasks-page", response_class=HTMLResponse)
@@ -39,7 +42,10 @@ def tasks_page(
 ):
     tasks = task_repo.get_tasks(db, current_user.id)
 
-    return templates.TemplateResponse("tasks.html", {
-        "request": request,
-        "tasks": tasks
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="tasks.html",
+        context={
+            "tasks": tasks
+        }
+    )
