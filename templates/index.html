@@ -1,59 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Mini CRM</title>
-</head>
 <body>
-
-<h2>Register</h2>
-<button onclick="register()">Register</button>
-
-<h2>Login</h2>
-<button onclick="login()">Login</button>
-
-<h2>Add Client</h2>
-<input id="client_name" placeholder="name">
-<button onclick="addClient()">Add Client</button>
-
-{% raw %}
-<script>
-let token = "";
-
-async function register() {
-    const response = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'test', password: '1234' })
-    });
-    alert("Registered");
-}
-
-async function login() {
-    const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'test', password: '1234' })
-    });
-    const data = await response.json();
-    token = data.access_token;
-    alert("Logged in");
-}
-
-async function addClient() {
-    await fetch('/clients/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-            name: document.getElementById('client_name').value
-        })
-    });
-    alert("Client added");
-}
-</script>
-{% endraw %}
-
+<h1>TEST OK</h1>
 </body>
 </html>
