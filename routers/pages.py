@@ -22,6 +22,9 @@ def clients_page(
 ):
     clients = client_repo.get_clients(db, current_user.id)
 
+    print("TYPE:", type(clients))
+    print("FIRST:", clients[0] if clients else "EMPTY")
+
     return templates.TemplateResponse("clients.html", {
         "request": request,
         "clients": clients
