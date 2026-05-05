@@ -1,3 +1,6 @@
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi import Request
 from config import SECRET_KEY, ALGORITHM
 from dotenv import load_dotenv
 load_dotenv()
@@ -8,6 +11,13 @@ import models.user
 import models.client
 import models.communication
 import models.task
+
+templates = Jinja2Templates(directory="templates")
+
+
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 app = FastAPI()
 
