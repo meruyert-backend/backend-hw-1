@@ -1,18 +1,32 @@
 from sqlalchemy.orm import Session
 from models.communication import Communication
+from services.ai_service import extract_tasks
+from repositories import task_repo
 
 #CREATE
-def create_communication(db: Session, text: str, client_id: int):
-    comm = Communication(
+def create_communication(db, text, client_id):
+    communication = Communication(
         text=text,
         client_id=client_id
     )
 
-    db.add(comm)
+    db.add(communication)
     db.commit()
-    db.refresh(comm)
+    db.refresh(communication)
 
-    return comm
+    # 🔥 AI PART
+    tasks = extract_tasks(text)
+
+    for t in tasks:
+        task_repo.create_task(
+            db,
+            title=t["title"],
+            deadline=t.get("deadline"),
+            client_id=client_id,
+            communication_id=communication.id
+        )
+
+    return communication
 
 
 #GET ALL (по пользователю)

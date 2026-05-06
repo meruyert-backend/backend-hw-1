@@ -90,3 +90,20 @@ def create_client_page(
     )
 
     return RedirectResponse(url="/clients-page", status_code=303)
+
+
+@router.get("/communications-page")
+def communications_page(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    communications = communication_repo.get_communications(db, current_user.id)
+
+    return templates.TemplateResponse(
+        "communications.html",
+        {
+            "request": request,
+            "communications": communications
+        }
+    )
