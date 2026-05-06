@@ -15,7 +15,7 @@ from database import get_db
 from models.user import User
 from schemas.user import UserCreate
 
-from fastapi import Response
+from fastapi import Response, Form
 
 
 router = APIRouter()
