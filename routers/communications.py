@@ -12,6 +12,9 @@ from services.ai_service import extract_tasks
 from repositories import task_repo
 
 
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+
 router = APIRouter(prefix="/communications", tags=["Communications"])
 
 #CREATE
@@ -32,26 +35,24 @@ def create_communication(
         client_id=data.client_id
     )
 
-    # AI part
-    # AI part
-    try:
-        tasks = extract_tasks(data.text)
-        print("AI TASKS:", tasks)
-
-        if tasks:
-            for t in tasks:
-                task_repo.create_task(
-                    db,
-                    title=t.get("title"),
-                    deadline=t.get("deadline"),
-                    client_id=data.client_id,
-                    communication_id=comm.id
-                )
-
-    except Exception as e:
-        print("AI ERROR:", e)
-
     return comm
+
+
+
+@router.post("/form")
+def create_communication_form(
+    text: str = Form(...),
+    client_id: int = Form(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    communication_repo.create_communication(
+        db=db,
+        text=text,
+        client_id=client_id
+    )
+
+    return RedirectResponse(url="/communications-page", status_code=303)
 
 
 #GET ALL
