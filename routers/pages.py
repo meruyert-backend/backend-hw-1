@@ -6,6 +6,9 @@ from fastapi.templating import Jinja2Templates
 from database import get_db
 from repositories import client_repo, task_repo
 
+from dependencies import get_current_user
+from models.user import User
+
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
@@ -37,14 +40,20 @@ def register_page(request: Request):
     )
 
 
-@router.get("/clients-page", response_class=HTMLResponse)
-def clients_page(request: Request, db: Session = Depends(get_db)):
-    clients = client_repo.get_clients(db)
+@router.get("/clients-page")
+def clients_page(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    clients = client_repo.get_clients(db, current_user.id)
 
     return templates.TemplateResponse(
-        name="clients.html",
-        request=request,
-        context={}
+        "clients.html",
+        {
+            "request": request,
+            "clients": clients
+        }
     )
 
 
