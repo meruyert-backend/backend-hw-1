@@ -1,25 +1,49 @@
 from config import SECRET_KEY, ALGORITHM
 from dotenv import load_dotenv
 load_dotenv()
-from fastapi import APIRouter, Depends, HTTPException
+
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import RedirectResponse
 
 from passlib.context import CryptContext
-import os
-from jose import jwt
+from jose import jwt, JWTError
 from datetime import datetime, timedelta
 
 from database import get_db
 from models.user import User
 from schemas.user import UserCreate
-from fastapi.responses import RedirectResponse
 
 
 router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
+# ======================
+# TOKEN FUNCTIONS
+# ======================
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(hours=24)
+    to_encode.update({"exp": int(expire.timestamp())})
+
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def decode_access_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+
+# ======================
+# PASSWORD FUNCTIONS
+# ======================
 
 def hash_password(password: str):
     return pwd_context.hash(password)
@@ -29,17 +53,33 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(hours=24)
-    to_encode.update({"exp": int(expire.timestamp())})
+# ======================
+# CURRENT USER (AUTH)
+# ======================
 
-    print("CREATE TOKEN KEY:", SECRET_KEY)
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    token = request.cookies.get("access_token")
 
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    token = token.replace("Bearer ", "")
+
+    payload = decode_access_token(token)
+    email = payload.get("sub")
+
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return user
 
 
+# ======================
 # REGISTER
+# ======================
+
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user.email).first()
@@ -59,25 +99,29 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return {"message": "User created"}
 
 
+# ======================
 # LOGIN
+# ======================
+
 @router.post("/login")
 def login(
+    response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
 
     if not user or not verify_password(form_data.password, user.password):
-        return {"error": "Invalid credentials"}
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token({"sub": user.email})
-
-    response = RedirectResponse(url="/clients-page", status_code=302)
 
     response.set_cookie(
         key="access_token",
         value=f"Bearer {token}",
-        httponly=True
+        httponly=True,
+        secure=True,
+        samesite="lax"
     )
 
-    return response
+    return RedirectResponse(url="/clients-page", status_code=303)
