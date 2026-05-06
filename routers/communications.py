@@ -11,6 +11,7 @@ from repositories import communication_repo, client_repo
 from services.ai_service import extract_tasks
 from repositories import task_repo
 
+
 router = APIRouter(prefix="/communications", tags=["Communications"])
 
 #CREATE

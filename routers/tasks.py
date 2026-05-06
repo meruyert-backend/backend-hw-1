@@ -8,6 +8,9 @@ from models.user import User
 from schemas.task import TaskCreate, TaskUpdate, TaskResponse
 from repositories import task_repo, client_repo
 
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 #CREATE
@@ -29,6 +32,27 @@ def create_task(
         client_id=data.client_id,
         user_id=current_user.id
     )
+
+
+
+@router.post("/form")
+def create_task_form(
+    title: str = Form(...),
+    deadline: str = Form(None),
+    client_id: int = Form(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    task_repo.create_task(
+        db=db,
+        title=title,
+        deadline=deadline,
+        client_id=client_id
+    )
+
+    return RedirectResponse(url="/tasks-page", status_code=303)
+
+
 
 #GET ALL
 @router.get("/", response_model=list[TaskResponse])

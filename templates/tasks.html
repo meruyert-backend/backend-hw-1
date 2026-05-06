@@ -1,9 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tasks</title>
+</head>
+<body>
+
 <h1>Tasks</h1>
+
+<a href="/clients-page">Back</a>
+
+<h2>Add Task</h2>
+
+<form method="post" action="/tasks/form">
+    <input type="text" name="title" placeholder="Task title" required>
+    <input type="text" name="deadline" placeholder="Deadline">
+    <input type="number" name="client_id" placeholder="Client ID" required>
+    <button type="submit">Add</button>
+</form>
+
+<hr>
+
+<h2>All Tasks</h2>
 
 <ul>
     {% for task in tasks %}
-        <li>{{ task.title }}</li>
+        <li>
+            <strong>{{ task.title }}</strong>
+            (Deadline: {{ task.deadline }})
+            — Client: {{ task.client_id }}
+        </li>
     {% endfor %}
 </ul>
 
-<a href="/">Back</a>
+</body>
+</html>

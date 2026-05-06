@@ -108,9 +108,11 @@ def communications_page(
     communications = communication_repo.get_communications(db, current_user.id)
 
     return templates.TemplateResponse(
-        "communications.html",
-        {
+        name="communications.html",
+        request=request,
+        context={
             "request": request,
             "communications": communications
         }
     )
+

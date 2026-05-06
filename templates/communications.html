@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Communications</title>
+</head>
+<body>
+
+<h1>Communications</h1>
+
+<a href="/clients-page">Back</a>
+
+<h2>Add Communication</h2>
+
+<form method="post" action="/communications/">
+    <input type="text" name="text" placeholder="Enter communication" required>
+    <input type="number" name="client_id" placeholder="Client ID" required>
+    <button type="submit">Add</button>
+</form>
+
+<hr>
+
+<h2>All Communications</h2>
+
+<ul>
+    {% for comm in communications %}
+        <li>
+            <strong>{{ comm.text }}</strong> (Client ID: {{ comm.client_id }})
+        </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
