@@ -64,7 +64,7 @@ def clients_page(
 
 @router.get("/tasks-page", response_class=HTMLResponse)
 def tasks_page(request: Request, db: Session = Depends(get_db)):
-    tasks = task_repo.get_tasks(db)
+    tasks = task_repo.get_tasks(db, current_user.id)
 
     return templates.TemplateResponse(
         name="tasks.html",

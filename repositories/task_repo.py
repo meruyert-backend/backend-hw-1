@@ -18,14 +18,15 @@ def create_task(db: Session, title: str, deadline: str, client_id: int, communic
     return task
 
 
-def get_tasks(db: Session, user_id: int):
-    return db.query(Task).join(Client).filter(
+
+def get_tasks(db, user_id: int):
+    return db.query(Task).join(Task.client).filter(
         Client.user_id == user_id
     ).all()
 
 
 def get_task(db: Session, task_id: int, user_id: int):
-    return db.query(Task).join(Client).filter(
+    return db.query(Task).join(Task.client).filter(
         Task.id == task_id,
         Client.user_id == user_id
     ).first()
