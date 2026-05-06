@@ -26,27 +26,26 @@ def create_client(
         user_id=current_user.id
     )
 
-#GET ALL
-@router.get("/", response_model=list[ClientResponse])
-def get_clients(
+
+@router.post("/clients-page")
+def create_client_page(
+    name: str = Form(...),
+    company: str = Form(...),
+    notes: str = Form(""),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return client_repo.get_clients(db, current_user.id)
+    client_repo.create_client(
+        db,
+        name=name,
+        company=company,
+        notes=notes,
+        user_id=current_user.id
+    )
 
-#GET ONE
-@router.get("/{client_id}", response_model=ClientResponse)
-def get_client(
-    client_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    client = client_repo.get_client(db, client_id, current_user.id)
+    return RedirectResponse(url="/clients-page", status_code=303)
 
-    if not client:
-        raise HTTPException(status_code=404, detail="Client not found")
 
-    return client
 
 #UPDATE
 @router.put("/{client_id}", response_model=ClientResponse)

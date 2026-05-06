@@ -16,6 +16,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
+
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
@@ -60,6 +61,34 @@ def clients_page(
         }
     )
 
+#GET ONE
+@router.get("/{client_id}", response_model=ClientResponse)
+def get_client(
+    client_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    client = client_repo.get_client(db, client_id, current_user.id)
+
+    if not client:
+        raise HTTPException(status_code=404, detail="Client not found")
+
+    return client
+
+
+#GET ONE
+@router.get("/{task_id}", response_model=TaskResponse)
+def get_task(
+    task_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    task = task_repo.get_task(db, task_id, current_user.id)
+
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    return task
 
 
 @router.get("/tasks-page", response_class=HTMLResponse)
@@ -80,23 +109,12 @@ def tasks_page(
     )
 
 
-@router.post("/clients-page")
-def create_client_page(
-    name: str = Form(...),
-    company: str = Form(...),
-    notes: str = Form(""),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    client_repo.create_client(
-        db,
-        name=name,
-        company=company,
-        notes=notes,
-        user_id=current_user.id
+@router.get("/tasks/form")
+def task_form(request: Request):
+    return templates.TemplateResponse(
+        "tasks.html",
+        {"request": request}
     )
-
-    return RedirectResponse(url="/clients-page", status_code=303)
 
 
 @router.get("/communications-page")
@@ -115,4 +133,34 @@ def communications_page(
             "communications": communications
         }
     )
+
+
+#GET ONE
+@router.get("/{comm_id}", response_model=CommunicationResponse)
+def get_communication(
+    comm_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    comm = communication_repo.get_communication(db, comm_id, current_user.id)
+
+    if not comm:
+        raise HTTPException(status_code=404, detail="Communication not found")
+
+    return comm
+
+
+@router.get("/communications/form")
+def communications_form_page(
+    request: Request,
+    current_user: User = Depends(get_current_user)
+):
+    return templates.TemplateResponse(
+        "communications.html",
+        {
+            "request": request,
+            "user": current_user
+        }
+    )
+
 
