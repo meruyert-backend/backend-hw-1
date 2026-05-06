@@ -1,16 +1,10 @@
-<html>
-<head>
-    <title>Clients</title>
-</head>
-<body>
-    <h1>Clients</h1>
+{% extends "base.html" %}
 
-    <ul>
-        {% for client in clients %}
-            <li>
-                <b>{{ client.name }}</b> ({{ client.company }})
-            </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block content %}
+<h1>Clients</h1>
+
+{% for client in clients %}
+    <p>{{ client.name }}</p>
+{% endfor %}
+
+{% endblock %}

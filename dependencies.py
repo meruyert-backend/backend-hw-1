@@ -1,5 +1,5 @@
 from config import SECRET_KEY, ALGORITHM
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -13,26 +13,15 @@ load_dotenv()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
-):
-    try:
-        print("DECODE TOKEN KEY:", SECRET_KEY)
-        print("TOKEN:", token)
-        print("TRYING DECODE...")
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    token = request.cookies.get("access_token")
 
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("PAYLOAD:", payload)
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
-        email = payload.get("sub")
+    # remove "Bearer "
+    token = token.replace("Bearer ", "")
 
-        user = db.query(User).filter(User.email == email).first()
+    user_id = decode_token(token)
 
-        if user is None:
-            raise HTTPException(status_code=401, detail="Invalid user")
-
-        return user
-
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    return db.query(User).filter(User.id == user_id).first()

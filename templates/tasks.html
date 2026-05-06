@@ -1,16 +1,10 @@
-<html>
-<head>
-    <title>Tasks</title>
-</head>
-<body>
-    <h1>Tasks</h1>
+{% extends "base.html" %}
 
-    <ul>
-        {% for task in tasks %}
-            <li>
-                {{ task.title }} - {{ task.status }}
-            </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block content %}
+<h1>Tasks</h1>
+
+{% for task in tasks %}
+    <p>{{ task.title }}</p>
+{% endfor %}
+
+{% endblock %}

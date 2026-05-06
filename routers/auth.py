@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from database import get_db
 from models.user import User
 from schemas.user import UserCreate
+from fastapi.responses import RedirectResponse
+
 
 router = APIRouter()
 
@@ -70,7 +72,12 @@ def login(
 
     token = create_access_token({"sub": user.email})
 
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
+    response = RedirectResponse(url="/clients-page", status_code=302)
+
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {token}",
+        httponly=True
+    )
+
+    return response

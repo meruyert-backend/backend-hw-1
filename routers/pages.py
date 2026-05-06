@@ -14,12 +14,23 @@ templates = Jinja2Templates(directory="templates")
 router = APIRouter()
 
 
+@router.get("/login", response_class=HTMLResponse)
+def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+@router.get("/register", response_class=HTMLResponse)
+def register_page(request: Request):
+    return templates.TemplateResponse("signup.html", {"request": request})
+
+
 @router.get("/clients-page", response_class=HTMLResponse)
 def clients_page(
     request: Request,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    clients = client_repo.get_clients(db, user_id=1)
+    clients = client_repo.get_clients(db, current_user.id)
 
     print("TYPE:", type(clients))
     print("FIRST:", clients[0] if clients else "EMPTY")
@@ -37,8 +48,9 @@ def clients_page(
 def tasks_page(
     request: Request,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    tasks = task_repo.get_tasks(db, user_id=1)
+    tasks = task_repo.get_tasks(db, current_user.id)
 
     return templates.TemplateResponse(
         request=request,
