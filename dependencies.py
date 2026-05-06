@@ -1,17 +1,8 @@
-from config import SECRET_KEY, ALGORITHM
 from fastapi import Depends, HTTPException, Request
-from jose import jwt, JWTError
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from routers.auth import decode_access_token
-
 from database import get_db
 from models.user import User
-
-from dotenv import load_dotenv
-load_dotenv()
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+from routers.auth import decode_access_token
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)):
@@ -23,6 +14,19 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     # remove "Bearer "
     token = token.replace("Bearer ", "")
 
-    user_id = decode_access_token(token)
+    # decode token → returns dict
+    payload = decode_access_token(token)
 
-    return db.query(User).filter(User.id == user_id).first()
+    # extract email (you stored it as "sub")
+    email = payload.get("sub")
+
+    if not email:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    # find user by email (NOT id)
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return user
