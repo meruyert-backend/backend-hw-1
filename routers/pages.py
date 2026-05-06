@@ -54,8 +54,12 @@ def clients_page(
     return templates.TemplateResponse(
         name="clients.html",
         request=request,
-        context={}
+        context={
+            "request": request,
+            "clients": clients
+        }
     )
+
 
 
 @router.get("/tasks-page", response_class=HTMLResponse)
