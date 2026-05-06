@@ -1,10 +1,9 @@
-{% extends "base.html" %}
-
-{% block content %}
 <h1>Clients</h1>
 
-{% for client in clients %}
-    <p>{{ client.name }}</p>
-{% endfor %}
+<ul>
+    {% for client in clients %}
+        <li>{{ client.name }} ({{ client.company }})</li>
+    {% endfor %}
+</ul>
 
-{% endblock %}
+<a href="/">Back</a>

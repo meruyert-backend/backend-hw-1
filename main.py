@@ -1,29 +1,27 @@
-from config import SECRET_KEY, ALGORITHM
 from dotenv import load_dotenv
 load_dotenv()
-from fastapi import FastAPI
-from database import engine, Base
-from routers import clients, tasks, communications, pages, auth
-import models.user
-import models.client
-import models.communication
-import models.task
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from database import engine, Base
+from routers import clients, tasks, communications, pages, auth
+
+import models.user
+import models.client
+import models.communication
+import models.task
+
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-        context={}
-    )
+    return templates.TemplateResponse("index.html", {"request": request})
+
 
 Base.metadata.create_all(bind=engine)
 
