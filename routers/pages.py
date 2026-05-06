@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.templating import Jinja2Templates
 
 from database import get_db
-from repositories import client_repo, task_repo
+from repositories import client_repo, task_repo, communication_repo
 
 from dependencies import get_current_user
 from models.user import User
@@ -63,13 +63,20 @@ def clients_page(
 
 
 @router.get("/tasks-page", response_class=HTMLResponse)
-def tasks_page(request: Request, db: Session = Depends(get_db)):
+def tasks_page(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     tasks = task_repo.get_tasks(db, current_user.id)
 
     return templates.TemplateResponse(
         name="tasks.html",
         request=request,
-        context={}
+        context={
+            "request": request,
+            "tasks": tasks
+        }
     )
 
 
