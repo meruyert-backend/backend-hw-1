@@ -9,6 +9,9 @@ from repositories import client_repo, task_repo
 from dependencies import get_current_user
 from models.user import User
 
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
@@ -64,3 +67,22 @@ def tasks_page(request: Request, db: Session = Depends(get_db)):
         request=request,
         context={}
     )
+
+
+@router.post("/clients-page")
+def create_client_page(
+    name: str = Form(...),
+    company: str = Form(...),
+    notes: str = Form(""),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    client_repo.create_client(
+        db,
+        name=name,
+        company=company,
+        notes=notes,
+        user_id=current_user.id
+    )
+
+    return RedirectResponse(url="/clients-page", status_code=303)
