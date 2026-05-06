@@ -82,7 +82,6 @@ def register(
 
 @router.post("/login")
 def login(
-    response: Response,
     username: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(get_db)
@@ -94,6 +93,8 @@ def login(
 
     token = create_access_token({"sub": user.email})
 
+    response = RedirectResponse(url="/clients-page", status_code=303)
+
     response.set_cookie(
         key="access_token",
         value=f"Bearer {token}",
@@ -101,4 +102,4 @@ def login(
         samesite="lax"
     )
 
-    return RedirectResponse(url="/clients-page", status_code=303)
+    return response
