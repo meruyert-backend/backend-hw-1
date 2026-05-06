@@ -16,4 +16,4 @@ class Communication(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     client = relationship("Client", back_populates="communications")
-    tasks = relationship("Task", back_populates="communication")
+    tasks = relationship("Task", back_populates="communication", cascade="all, delete")

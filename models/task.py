@@ -10,7 +10,6 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
     communication_id = Column(Integer, ForeignKey("communications.id"), nullable=True)
 
@@ -19,3 +18,6 @@ class Task(Base):
     status = Column(String, default="todo")
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    client = relationship("Client", back_populates="tasks")
+    communication = relationship("Communication", back_populates="tasks")

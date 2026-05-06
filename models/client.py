@@ -16,4 +16,4 @@ class Client(Base):
 
     user = relationship("User", back_populates="clients")
     communications = relationship("Communication", back_populates="client")
-    tasks = relationship("Task", back_populates="client")
+    tasks = relationship("Task", back_populates="client", cascade="all, delete")
