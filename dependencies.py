@@ -12,9 +12,8 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-    # ✅ IMPORTANT — strip Bearer
-    if token.startswith("Bearer "):
-        token = token[7:]
+    # normalize token
+    token = token.replace("Bearer ", "")
 
     try:
         payload = decode_access_token(token)
@@ -25,7 +24,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     email = payload.get("sub")
 
     if not email:
-        raise HTTPException(status_code=401, detail="Invalid payload")
+        raise HTTPException(status_code=401, detail="Invalid token")
 
     user = db.query(User).filter(User.email == email).first()
 
