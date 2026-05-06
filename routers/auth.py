@@ -2,9 +2,8 @@ from config import SECRET_KEY, ALGORITHM
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, Form
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi.responses import RedirectResponse
 
 from passlib.context import CryptContext
 from jose import jwt, JWTError
@@ -12,6 +11,8 @@ from datetime import datetime, timedelta
 
 from database import get_db
 from models.user import User
+from fastapi import Form, Response
+from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 
