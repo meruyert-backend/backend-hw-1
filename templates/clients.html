@@ -1,9 +1,12 @@
 <h1>Clients</h1>
 
+<a href="/">Back</a>
+
 <ul>
     {% for client in clients %}
-        <li>{{ client.name }} ({{ client.company }})</li>
+        <li>
+            <strong>{{ client.name }}</strong> - {{ client.company }} <br>
+            {{ client.notes }}
+        </li>
     {% endfor %}
 </ul>
-
-<a href="/">Back</a>
