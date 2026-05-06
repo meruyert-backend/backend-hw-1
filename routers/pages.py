@@ -12,17 +12,29 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        name="index.html",
+        request=request,
+        context={}
+    )
 
 
 @router.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(
+        name="login.html",
+        request=request,
+        context={}
+    )
 
 
 @router.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse(
+        name="register.html",
+        request=request,
+        context={}
+    )
 
 
 @router.get("/clients-page", response_class=HTMLResponse)
@@ -30,11 +42,9 @@ def clients_page(request: Request, db: Session = Depends(get_db)):
     clients = client_repo.get_clients(db)
 
     return templates.TemplateResponse(
-        "clients.html",
-        {
-            "request": request,
-            "clients": clients
-        }
+        name="clients.html",
+        request=request,
+        context={}
     )
 
 
@@ -43,9 +53,7 @@ def tasks_page(request: Request, db: Session = Depends(get_db)):
     tasks = task_repo.get_tasks(db)
 
     return templates.TemplateResponse(
-        "tasks.html",
-        {
-            "request": request,
-            "tasks": tasks
-        }
+        name="tasks.html",
+        request=request,
+        context={}
     )
