@@ -45,7 +45,8 @@ def create_task_form(
         db=db,
         title=title,
         deadline=deadline,
-        client_id=client_id
+        client_id=client_id,
+        user_id=current_user.id
     )
 
     return RedirectResponse(url="/tasks-page", status_code=303)

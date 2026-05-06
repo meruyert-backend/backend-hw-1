@@ -4,7 +4,11 @@ from services.ai_service import extract_tasks
 from repositories import task_repo
 
 #CREATE
-def create_communication(db: Session, text: str, client_id: int):
+def create_communication(
+    db,
+    text,
+    client_id,
+):
     communication = Communication(
         text=text,
         client_id=client_id

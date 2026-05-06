@@ -3,12 +3,18 @@ from models.task import Task
 from models.client import Client
 
 
-def create_task(db: Session, title: str, deadline: str, client_id: int, communication_id: int = None):
+def create_task(
+    db,
+    title,
+    deadline,
+    client_id,
+    user_id
+):
     task = Task(
         title=title,
         deadline=deadline,
         client_id=client_id,
-        communication_id=communication_id
+        user_id=user_id
     )
 
     db.add(task)

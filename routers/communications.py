@@ -49,7 +49,8 @@ def create_communication_form(
     communication_repo.create_communication(
         db=db,
         text=text,
-        client_id=client_id
+        client_id=client_id,
+        user_id=current_user.id
     )
 
     return RedirectResponse(url="/communications-page", status_code=303)
