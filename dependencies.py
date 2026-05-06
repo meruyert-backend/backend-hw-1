@@ -3,6 +3,7 @@ from fastapi import Depends, HTTPException, Request
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+from routers.auth import decode_access_token
 
 from database import get_db
 from models.user import User
@@ -22,6 +23,6 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     # remove "Bearer "
     token = token.replace("Bearer ", "")
 
-    user_id = decode_token(token)
+    user_id = decode_access_token(token)
 
     return db.query(User).filter(User.id == user_id).first()
