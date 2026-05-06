@@ -4,7 +4,7 @@ from services.ai_service import extract_tasks
 from repositories import task_repo
 
 #CREATE
-def create_communication(db, text, client_id):
+def create_communication(db: Session, text: str, client_id: int):
     communication = Communication(
         text=text,
         client_id=client_id
@@ -17,9 +17,14 @@ def create_communication(db, text, client_id):
     # 🔥 AI PART
     tasks = extract_tasks(text)
 
+    print("AI RESULT:", tasks)
+
     for t in tasks:
+        if "title" not in t:
+            continue
+
         task_repo.create_task(
-            db,
+            db=db,
             title=t["title"],
             deadline=t.get("deadline"),
             client_id=client_id,

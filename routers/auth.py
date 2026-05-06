@@ -97,9 +97,8 @@ def login(
 
     response.set_cookie(
         key="access_token",
-        value=f"Bearer {token}",
-        httponly=True,
-        samesite="lax"
+        value=access_token,
+        httponly=True
     )
 
     return response

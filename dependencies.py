@@ -9,21 +9,18 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
     token = request.cookies.get("access_token")
 
     if not token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=401, detail="No token")
 
-    # remove "Bearer "
-    token = token.replace("Bearer ", "")
+    try:
+        payload = decode_access_token(token)
+    except:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
-    # decode token → returns dict
-    payload = decode_access_token(token)
-
-    # extract email (you stored it as "sub")
     email = payload.get("sub")
 
     if not email:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=401, detail="Invalid payload")
 
-    # find user by email (NOT id)
     user = db.query(User).filter(User.email == email).first()
 
     if not user:
