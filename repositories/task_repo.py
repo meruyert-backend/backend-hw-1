@@ -8,13 +8,15 @@ def create_task(
     title,
     deadline,
     client_id,
-    user_id
+    user_id,
+    communication_id=None
 ):
     task = Task(
         title=title,
         deadline=deadline,
         client_id=client_id,
-        user_id=user_id
+        user_id=user_id,
+        communication_id=communication_id
     )
 
     db.add(task)

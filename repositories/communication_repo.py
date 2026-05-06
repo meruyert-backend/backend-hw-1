@@ -8,10 +8,12 @@ def create_communication(
     db,
     text,
     client_id,
+    user_id
 ):
     communication = Communication(
         text=text,
-        client_id=client_id
+        client_id=client_id,
+        user_id=user_id
     )
 
     db.add(communication)
@@ -32,7 +34,8 @@ def create_communication(
             title=t["title"],
             deadline=t.get("deadline"),
             client_id=client_id,
-            communication_id=communication.id
+            communication_id=communication.id,
+            user_id=user_id
         )
 
     return communication
