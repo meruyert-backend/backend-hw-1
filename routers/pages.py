@@ -25,9 +25,9 @@ def clients_page(
     print("FIRST:", clients[0] if clients else "EMPTY")
 
     return templates.TemplateResponse(
-        "clients.html",
-        {
-            "request": request,
+        request=request,
+        name="clients.html",
+        context={
             "clients": clients
         }
     )
@@ -41,9 +41,9 @@ def tasks_page(
     tasks = task_repo.get_tasks(db, user_id=1)
 
     return templates.TemplateResponse(
-        "tasks.html",
-        {
-            "request": request,
+        request=request,
+        name="tasks.html",
+        context={
             "tasks": tasks
         }
     )
