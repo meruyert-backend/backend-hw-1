@@ -49,11 +49,9 @@ def clients_page(
     clients = client_repo.get_clients(db, current_user.id)
 
     return templates.TemplateResponse(
-        "clients.html",
-        {
-            "request": request,
-            "clients": clients
-        }
+        name="clients.html",
+        request=request,
+        context={}
     )
 
 
