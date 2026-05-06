@@ -2,7 +2,7 @@ from config import SECRET_KEY, ALGORITHM
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
@@ -14,6 +14,8 @@ from datetime import datetime, timedelta
 from database import get_db
 from models.user import User
 from schemas.user import UserCreate
+
+from fastapi import Response
 
 
 router = APIRouter()
