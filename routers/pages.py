@@ -18,29 +18,26 @@ router = APIRouter()
 def clients_page(
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
 ):
-    clients = client_repo.get_clients(db, current_user.id)
+    clients = client_repo.get_clients(db, user_id=1)
 
     print("TYPE:", type(clients))
     print("FIRST:", clients[0] if clients else "EMPTY")
 
     return templates.TemplateResponse(
-        request=request,
-        name="clients.html",
-        context={
+        "clients.html",
+        {
+            "request": request,
             "clients": clients
         }
     )
 
 
-@router.get("/tasks-page", response_class=HTMLResponse)
 def tasks_page(
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
 ):
-    tasks = task_repo.get_tasks(db, current_user.id)
+    tasks = task_repo.get_tasks(db, user_id=1)
 
     return templates.TemplateResponse(
         "tasks.html",
