@@ -26,7 +26,8 @@ def create_task(
         db,
         title=data.title,
         deadline=data.deadline,
-        client_id=data.client_id
+        client_id=data.client_id,
+        user_id=current_user.id
     )
 
 #GET ALL

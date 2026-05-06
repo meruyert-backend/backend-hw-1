@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
 from models.task import Task
+from models.client import Client
 
 #CREATE
-def create_task(db: Session, title: str, deadline: str, client_id: int, communication_id: int = None):
+def create_task(db: Session, title: str, deadline: str, client_id: int, user_id: int):
     task = Task(
         title=title,
         deadline=deadline,
         client_id=client_id,
-        communication_id=communication_id
+        user_id=user_id
     )
 
     db.add(task)
@@ -18,16 +19,17 @@ def create_task(db: Session, title: str, deadline: str, client_id: int, communic
 
 
 #GET ALL (по пользователю)
-def get_tasks(db):
-    return db.query(Task).all()
+def get_tasks(db: Session, user_id: int):
+    return db.query(Task).filter(Task.user_id == user_id).all()
 
 
 #GET ONE
 def get_task(db: Session, task_id: int, user_id: int):
-    return db.query(Task).join(Task.client).filter(
-        Task.client_id == Client.id,
-        Client.user_id == user_id
-    ).all()
+    return db.query(Task).filter(
+        Task.id == task_id,
+        Task.user_id == user_id
+    ).first()
+
 
 #UPDAT
 def update_task(db: Session, task: Task, title: str, deadline: str, status: str):
