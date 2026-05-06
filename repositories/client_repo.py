@@ -21,8 +21,8 @@ def create_client(db: Session, name: str, company: str, notes: str, user_id: int
     return client
 
 #ПОЛУЧИТЬ ВСЕХ КЛИЕНТОВ ПОЛЬЗОВАТЕЛЯ
-def get_clients(db: Session, user_id: int):
-    return db.query(Client).filter(Client.user_id == user_id).all()
+def get_clients(db):
+    return db.query(Client).all()
 
 
 #ПОЛУЧИТЬ ОДНОГО

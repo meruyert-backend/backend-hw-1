@@ -18,10 +18,8 @@ def create_task(db: Session, title: str, deadline: str, client_id: int, communic
 
 
 #GET ALL (по пользователю)
-def get_tasks(db: Session, user_id: int):
-    return db.query(Task).join(Task.client).filter(
-        Task.client.has(user_id=user_id)
-    ).all()
+def get_tasks(db):
+    return db.query(Task).all()
 
 
 #GET ONE
