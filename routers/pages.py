@@ -33,6 +33,7 @@ def clients_page(
     )
 
 
+@router.get("/tasks-page", response_class=HTMLResponse)
 def tasks_page(
     request: Request,
     db: Session = Depends(get_db),
