@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -6,18 +7,13 @@ from dependencies import get_current_user
 from models.user import User
 
 from schemas.communication import CommunicationCreate, CommunicationResponse
-from repositories import communication_repo, client_repo
-
+from repositories import communication_repo, client_repo, task_repo
 from services.ai_service import extract_tasks
-from repositories import task_repo
-
-
-from fastapi import Form
-from fastapi.responses import RedirectResponse
 
 router = APIRouter(prefix="/communications", tags=["Communications"])
 
-#CREATE
+
+# CREATE (API + AI)
 @router.post("/", response_model=CommunicationResponse)
 def create_communication(
     data: CommunicationCreate,
@@ -35,10 +31,29 @@ def create_communication(
         client_id=data.client_id
     )
 
+    # 🔥 AI TASK EXTRACTION
+    try:
+        tasks = extract_tasks(data.text)
+
+        for t in tasks:
+            if "title" not in t:
+                continue
+
+            task_repo.create_task(
+                db,
+                title=t.get("title"),
+                deadline=t.get("deadline"),
+                client_id=data.client_id,
+                communication_id=comm.id
+            )
+
+    except Exception as e:
+        print("AI ERROR:", e)
+
     return comm
 
 
-
+# CREATE (FORM)
 @router.post("/form")
 def create_communication_form(
     text: str = Form(...),
@@ -49,13 +64,13 @@ def create_communication_form(
     communication_repo.create_communication(
         db=db,
         text=text,
-        client_id=client_id,
-        user_id=current_user.id
+        client_id=client_id
     )
 
     return RedirectResponse(url="/communications-page", status_code=303)
 
-#GET ONE
+
+# GET ONE
 @router.get("/{comm_id}", response_model=CommunicationResponse)
 def get_communication(
     comm_id: int,
@@ -70,9 +85,7 @@ def get_communication(
     return comm
 
 
-
-
-#DELETE
+# DELETE
 @router.delete("/{comm_id}")
 def delete_communication(
     comm_id: int,

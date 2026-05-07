@@ -7,12 +7,11 @@ from dependencies import get_current_user
 
 from schemas.client import ClientCreate, ClientResponse
 from repositories import client_repo
-from fastapi import Form
 
 router = APIRouter(prefix="/clients", tags=["Clients"])
 
-#CREATE
 
+# CREATE
 @router.post("/", response_model=ClientResponse)
 def create_client(
     client: ClientCreate,
@@ -28,26 +27,7 @@ def create_client(
     )
 
 
-@router.post("/clients-page")
-def create_client_page(
-    name: str = Form(...),
-    company: str = Form(...),
-    notes: str = Form(""),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    client_repo.create_client(
-        db,
-        name=name,
-        company=company,
-        notes=notes,
-        user_id=current_user.id
-    )
-
-    return RedirectResponse(url="/clients-page", status_code=303)
-
-
-#GET ONE
+# GET ONE
 @router.get("/{client_id}", response_model=ClientResponse)
 def get_client(
     client_id: int,
@@ -61,7 +41,8 @@ def get_client(
 
     return client
 
-#UPDATE
+
+# UPDATE
 @router.put("/{client_id}", response_model=ClientResponse)
 def update_client(
     client_id: int,
@@ -82,7 +63,8 @@ def update_client(
         notes=data.notes
     )
 
-#DELETE
+
+# DELETE
 @router.delete("/{client_id}")
 def delete_client(
     client_id: int,

@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -8,12 +9,10 @@ from models.user import User
 from schemas.task import TaskCreate, TaskUpdate, TaskResponse
 from repositories import task_repo, client_repo
 
-from fastapi import Form
-from fastapi.responses import RedirectResponse
-
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
-#CREATE
+
+# CREATE (API)
 @router.post("/", response_model=TaskResponse)
 def create_task(
     data: TaskCreate,
@@ -29,10 +28,11 @@ def create_task(
         db,
         title=data.title,
         deadline=data.deadline,
-        client_id=data.client_id,
-        user_id=current_user.id
+        client_id=data.client_id
     )
 
+
+# CREATE (FORM)
 @router.post("/form")
 def create_task_form(
     title: str = Form(...),
@@ -45,14 +45,13 @@ def create_task_form(
         db=db,
         title=title,
         deadline=deadline,
-        client_id=client_id,
-        user_id=current_user.id
+        client_id=client_id
     )
 
     return RedirectResponse(url="/tasks-page", status_code=303)
 
 
-#GET ONE
+# GET ONE
 @router.get("/{task_id}", response_model=TaskResponse)
 def get_task(
     task_id: int,
@@ -67,8 +66,7 @@ def get_task(
     return task
 
 
-
-#UPDATE
+# UPDATE
 @router.put("/{task_id}", response_model=TaskResponse)
 def update_task(
     task_id: int,
@@ -90,7 +88,7 @@ def update_task(
     )
 
 
-#DELETE
+# DELETE
 @router.delete("/{task_id}")
 def delete_task(
     task_id: int,
