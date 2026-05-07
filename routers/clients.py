@@ -7,6 +7,7 @@ from dependencies import get_current_user
 
 from schemas.client import ClientCreate, ClientResponse
 from repositories import client_repo
+from fastapi import Form
 
 router = APIRouter(prefix="/clients", tags=["Clients"])
 
