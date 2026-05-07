@@ -47,6 +47,19 @@ def create_client_page(
     return RedirectResponse(url="/clients-page", status_code=303)
 
 
+#GET ONE
+@router.get("/{client_id}", response_model=ClientResponse)
+def get_client(
+    client_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    client = client_repo.get_client(db, client_id, current_user.id)
+
+    if not client:
+        raise HTTPException(status_code=404, detail="Client not found")
+
+    return client
 
 #UPDATE
 @router.put("/{client_id}", response_model=ClientResponse)

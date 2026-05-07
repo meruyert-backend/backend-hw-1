@@ -61,34 +61,6 @@ def clients_page(
         }
     )
 
-#GET ONE
-@router.get("/{client_id}", response_model=ClientResponse)
-def get_client(
-    client_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    client = client_repo.get_client(db, client_id, current_user.id)
-
-    if not client:
-        raise HTTPException(status_code=404, detail="Client not found")
-
-    return client
-
-
-#GET ONE
-@router.get("/{task_id}", response_model=TaskResponse)
-def get_task(
-    task_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    task = task_repo.get_task(db, task_id, current_user.id)
-
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-
-    return task
 
 
 @router.get("/tasks-page", response_class=HTMLResponse)
@@ -134,20 +106,6 @@ def communications_page(
         }
     )
 
-
-#GET ONE
-@router.get("/{comm_id}", response_model=CommunicationResponse)
-def get_communication(
-    comm_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    comm = communication_repo.get_communication(db, comm_id, current_user.id)
-
-    if not comm:
-        raise HTTPException(status_code=404, detail="Communication not found")
-
-    return comm
 
 
 @router.get("/communications/form")

@@ -55,6 +55,21 @@ def create_communication_form(
 
     return RedirectResponse(url="/communications-page", status_code=303)
 
+#GET ONE
+@router.get("/{comm_id}", response_model=CommunicationResponse)
+def get_communication(
+    comm_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    comm = communication_repo.get_communication(db, comm_id, current_user.id)
+
+    if not comm:
+        raise HTTPException(status_code=404, detail="Communication not found")
+
+    return comm
+
+
 
 
 #DELETE
