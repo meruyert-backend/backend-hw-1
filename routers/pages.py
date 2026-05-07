@@ -10,7 +10,7 @@ from dependencies import get_current_user
 from models.user import User
 
 from fastapi import Form
-from fastapi.responses import RedirectResponse
+from schemas.client import ClientResponse
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
