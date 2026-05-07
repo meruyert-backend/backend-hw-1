@@ -14,17 +14,29 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        name="index.html",
+        request=request,
+        context={}
+    )
 
 
 @router.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(
+        name="login.html",
+        request=request,
+        context={}
+    )
 
 
 @router.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse(
+        name="register.html",
+        request=request,
+        context={}
+    )
 
 
 @router.get("/clients-page", response_class=HTMLResponse)
@@ -36,8 +48,9 @@ def clients_page(
     clients = client_repo.get_clients(db, current_user.id)
 
     return templates.TemplateResponse(
-        "clients.html",
-        {"request": request, "clients": clients}
+        name="clients.html",
+        request=request,
+        context={}
     )
 
 
@@ -50,8 +63,9 @@ def tasks_page(
     tasks = task_repo.get_tasks(db, current_user.id)
 
     return templates.TemplateResponse(
-        "tasks.html",
-        {"request": request, "tasks": tasks}
+        name="tasks.html",
+        request=request,
+        context={}
     )
 
 
@@ -64,6 +78,7 @@ def communications_page(
     communications = communication_repo.get_communications(db, current_user.id)
 
     return templates.TemplateResponse(
-        "communications.html",
-        {"request": request, "communications": communications}
+        name="communications.html",
+        request=request,
+        context={}
     )
